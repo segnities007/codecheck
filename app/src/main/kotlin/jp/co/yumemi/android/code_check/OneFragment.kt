@@ -10,9 +10,11 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.*
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
+import kotlinx.coroutines.launch
 
 class OneFragment: Fragment(R.layout.fragment_one){
 
@@ -35,11 +37,10 @@ class OneFragment: Fragment(R.layout.fragment_one){
             }
         )
 
-        //nest point
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 val query = editText.text.toString()
-                adapter.submitList(viewModel.searchResults(query))
+                performSearch(query, viewModel, adapter)
                 true
             } else {
                 false
@@ -60,9 +61,21 @@ class OneFragment: Fragment(R.layout.fragment_one){
         findNavController().navigate(action)
     }
 
+
+    private fun performSearch(
+        query: String,
+        viewModel: OneViewModel,
+        adapter: CustomAdapter
+    ) {
+        lifecycleScope.launch {
+            val searchResult = viewModel.searchResults(query)
+            adapter.submitList(searchResult)
+        }
+    }
+
 }
 
-val diff_util= object: DiffUtil.ItemCallback<Item>(){
+val diff_util = object: DiffUtil.ItemCallback<Item>(){
     override fun areItemsTheSame(
         oldItem: Item,
         newItem: Item
@@ -91,7 +104,7 @@ class CustomAdapter(
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
-        viewType: Int
+        viewType: Int,
     ): ViewHolder {
     	val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
     	return ViewHolder(view)
@@ -99,7 +112,7 @@ class CustomAdapter(
 
     override fun onBindViewHolder(
         holder: ViewHolder,
-        position: Int
+        position: Int,
     ) {
     	val item = getItem(position)
         val textView: TextView = holder.itemView.findViewById<TextView>(R.id.repositoryNameView)
