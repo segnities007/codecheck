@@ -6,6 +6,7 @@ package jp.co.yumemi.android.code_check
 import android.app.Application
 import android.content.Context
 import android.os.Parcelable
+import androidx.annotation.Nullable
 import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,55 +27,50 @@ import java.util.*
  * TwoFragment で使う
  */
 class OneViewModel(
-    val context: FragmentActivity
+    val context: Application
 ) : ViewModel() {
 
-    // 検索結果
-    fun searchResults(inputText: String): List<Item> = runBlocking {
+    suspend fun searchResults(inputText: String): List<Item> {
         val client = HttpClient(Android)
+        val items = mutableListOf<Item>()
 
-        return@runBlocking viewModelScope.async {
-            val url = "https://api.github.com/search/repositories"
-            val contentType = "application/vnd.github.v3+json"
+        val url = "https://api.github.com/search/repositories"
+        val contentType = "application/vnd.github.v3+json"
 
-            val response = client.get<HttpResponse>(url){
-                header("Accept", contentType)
-                parameter("q", inputText)
-            }
+        val response = client.get<HttpResponse>(url) {
+            header("Accept", contentType)
+            parameter("q", inputText)
+        }
 
-            val jsonBody = JSONObject(response.receive<String>())
+        val jsonBody = JSONObject(response.receive<String>())
+        val jsonItems = jsonBody.optJSONArray("items")!!
 
-            val jsonItems = jsonBody.optJSONArray("items")!!
+        for (i in 0 until jsonItems.length()) {
+            val jsonItem = jsonItems.optJSONObject(i)
+            val name = jsonItem.optString("full_name")
+            val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
+            val language = jsonItem.optString("language")
+            val stargazersCount = jsonItem.optLong("stargazers_count")
+            val watchersCount = jsonItem.optLong("watchers_count")
+            val forksCount = jsonItem.optLong("forks_conut")
+            val openIssuesCount = jsonItem.optLong("open_issues_count")
 
-            val items = mutableListOf<Item>()
-
-            for (i in 0 until jsonItems.length()) {
-                val jsonItem = jsonItems.optJSONObject(i)!!
-                val name = jsonItem.optString("full_name")
-                val ownerIconUrl = jsonItem.optJSONObject("owner")!!.optString("avatar_url")
-                val language = jsonItem.optString("language")
-                val stargazersCount = jsonItem.optLong("stargazers_count")
-                val watchersCount = jsonItem.optLong("watchers_count")
-                val forksCount = jsonItem.optLong("forks_conut")
-                val openIssuesCount = jsonItem.optLong("open_issues_count")
-
-                items.add(
-                    Item(
-                        name = name,
-                        ownerIconUrl = ownerIconUrl,
-                        language = context.getString(R.string.writtenLanguage, language),
-                        stargazersCount = stargazersCount,
-                        watchersCount = watchersCount,
-                        forksCount = forksCount,
-                        openIssuesCount = openIssuesCount
-                    )
+            items.add(
+                Item(
+                    name = name,
+                    ownerIconUrl = ownerIconUrl,
+                    language = context.getString(R.string.written_language, language),
+                    stargazersCount = stargazersCount,
+                    watchersCount = watchersCount,
+                    forksCount = forksCount,
+                    openIssuesCount = openIssuesCount
                 )
-            }
+            )
+        }
 
-            lastSearchDate = Date()
+        lastSearchDate = Date()
 
-            return@async items.toList()
-        }.await()
+        return items.toList()
     }
 }
 

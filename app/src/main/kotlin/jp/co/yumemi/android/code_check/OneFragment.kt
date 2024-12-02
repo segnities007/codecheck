@@ -22,9 +22,9 @@ class OneFragment: Fragment(R.layout.fragment_one){
     ) {
         super.onViewCreated(view, savedInstanceState)
 
-        val context = activity
+        val context = requireActivity().application
         val binding = FragmentOneBinding.bind(view)
-        val viewModel = OneViewModel(context!!)
+        val viewModel = OneViewModel(context)
         val layoutManager = LinearLayoutManager(context)
         val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         val adapter= CustomAdapter(
@@ -36,16 +36,14 @@ class OneFragment: Fragment(R.layout.fragment_one){
         )
 
         //nest point
-        binding.searchInputText.setOnEditorActionListener{ editText, action, _ ->
-            if (action == EditorInfo.IME_ACTION_SEARCH){
-                editText.text.toString().let {
-                    viewModel.searchResults(it).apply{
-                        adapter.submitList(this)
-                    }
-                }
-                return@setOnEditorActionListener true
+        binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
+            if (action == EditorInfo.IME_ACTION_SEARCH) {
+                val query = editText.text.toString()
+                adapter.submitList(viewModel.searchResults(query))
+                true
+            } else {
+                false
             }
-            return@setOnEditorActionListener false
         }
 
         binding.recyclerView.also{
@@ -95,7 +93,7 @@ class CustomAdapter(
         parent: ViewGroup,
         viewType: Int
     ): ViewHolder {
-    	val view= LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
+    	val view = LayoutInflater.from(parent.context).inflate(R.layout.layout_item, parent, false)
     	return ViewHolder(view)
     }
 
@@ -104,7 +102,8 @@ class CustomAdapter(
         position: Int
     ) {
     	val item = getItem(position)
-        (holder.itemView.findViewById<View>(R.id.repositoryNameView) as TextView).text = item.name
+        val textView: TextView = holder.itemView.findViewById<TextView>(R.id.repositoryNameView)
+        textView.text = item.name
 
     	holder.itemView.setOnClickListener{
      		itemClickListener.itemClick(item)
