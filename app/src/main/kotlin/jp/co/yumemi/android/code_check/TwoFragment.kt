@@ -27,19 +27,25 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
         Log.d("検索した日時", lastSearchDate.toString())
 
         binding = FragmentTwoBinding.bind(view)
-
-        val item = args.item
-        val starText = "${item.stargazersCount} stars"
-        val watcherText = "${item.watchersCount} watchers"
-        val forkText = "${item.forksCount} forks"
-        val issueText = "${item.openIssuesCount} open issues"
-
-        _binding.ownerIconView.load(item.ownerIconUrl)
-        _binding.nameView.text = item.name
-        _binding.languageView.text = item.language
-        _binding.starsView.text = starText
-        _binding.watchersView.text = watcherText
-        _binding.forksView.text = forkText
-        _binding.openIssuesView.text = issueText
+        addInfo(args, _binding)
     }
+}
+
+fun addInfo(
+    args: TwoFragmentArgs,
+    binding: FragmentTwoBinding,
+){
+    val item = args.item
+    val starText = "${item.stargazersCount} stars"
+    val watcherText = "${item.watchersCount} watchers"
+    val forkText = "${item.forksCount} forks"
+    val issueText = "${item.openIssuesCount} open issues"
+
+    binding.ownerIconView.load(item.ownerIconUrl)
+    binding.nameView.text = item.name
+    binding.languageView.text = item.language
+    binding.starsView.text = starText
+    binding.watchersView.text = watcherText
+    binding.forksView.text = forkText
+    binding.openIssuesView.text = issueText
 }
