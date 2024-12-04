@@ -15,14 +15,14 @@ class TwoViewModel(
         binding: FragmentTwoBinding,
     ){
         val item = args.item
-        val starText = "${Item.stargazersCount} stars"
-        val watcherText = "${Item.watchersCount} watchers"
-        val forkText = "${Item.forksCount} forks"
-        val issueText = "${Item.openIssuesCount} open issues"
+        val starText = "${item.stargazersCount} stars"
+        val watcherText = "${item.watchersCount} watchers"
+        val forkText = "${item.forksCount} forks"
+        val issueText = "${item.openIssuesCount} open issues"
 
-        binding.ownerIconView.load(Item.ownerIconUrl)
-        binding.nameView.text = Item.name
-        binding.languageView.text = Item.language
+        binding.ownerIconView.load(item.ownerIconUrl)
+        binding.nameView.text = item.name
+        binding.languageView.text = item.language
         binding.starsView.text = starText
         binding.watchersView.text = watcherText
         binding.forksView.text = forkText

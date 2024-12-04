@@ -11,4 +11,5 @@ class TopActivity : AppCompatActivity(R.layout.activity_top) {
     companion object {
         var lastSearchDate: Date = Date()
     }
+
 }

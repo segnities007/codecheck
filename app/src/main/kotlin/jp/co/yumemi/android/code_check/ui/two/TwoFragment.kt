@@ -18,16 +18,23 @@ class TwoFragment : Fragment(R.layout.fragment_two) {
 
     private var binding: FragmentTwoBinding? = null
     private val _binding get() = binding!!
-    private val viewModel = TwoViewModel()
 
     override fun onViewCreated(
         view: View,
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
+
         Log.d("検索した日時", lastSearchDate.toString())
 
+        val viewModel = TwoViewModel()
         binding = FragmentTwoBinding.bind(view)
         viewModel.addInfo(args, _binding)
+    }
+
+    //メモリリーク対策
+    override fun onDestroyView() {
+        super.onDestroyView()
+        binding = null
     }
 }
