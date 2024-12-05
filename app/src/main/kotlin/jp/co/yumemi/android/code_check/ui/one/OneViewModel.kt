@@ -3,10 +3,8 @@
  */
 package jp.co.yumemi.android.code_check.ui.one
 
-import android.app.Application
 import android.content.Context
 import android.util.Log
-import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
@@ -24,6 +22,7 @@ import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 import jp.co.yumemi.android.code_check.model.Item
+import jp.co.yumemi.android.code_check.ui.one.adapter.CustomAdapter
 import kotlinx.coroutines.launch
 import org.json.JSONObject
 import java.util.*
@@ -46,7 +45,7 @@ class OneViewModel(
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 val query = editText.text.toString()
-                viewModel.performSearch(context, query, viewModel, adapter, lifecycleScope)
+                viewModel.searchResults(context, query, viewModel, adapter, lifecycleScope)
                 hideKeyboard(editText, context)
                 editText.clearFocus()
                 true
@@ -70,7 +69,7 @@ class OneViewModel(
             val imm = context.getSystemService(Context.INPUT_METHOD_SERVICE) as? InputMethodManager
             imm?.hideSoftInputFromWindow(view.windowToken, 0)
         }catch (e: Exception){
-            Log.d(e.toString(), "imm is NullPointException or other error")
+            Log.d(e.toString(), "imm is NullPointerException or other error")
         }
     }
 
@@ -82,7 +81,7 @@ class OneViewModel(
         findNavController.navigate(action)
     }
 
-    fun performSearch(
+    private fun searchResults(
         context: Context,
         query: String,
         viewModel: OneViewModel,
@@ -90,12 +89,12 @@ class OneViewModel(
         lifecycleScope: LifecycleCoroutineScope,
     ) {
         lifecycleScope.launch {
-            val searchResult = viewModel.searchResults(context, query)
+            val searchResult = viewModel.suspendSearchResults(context, query)
             adapter.submitList(searchResult)
         }
     }
 
-    private suspend fun searchResults(
+    private suspend fun suspendSearchResults(
         context: Context,
         inputText: String,
     ): List<Item> {

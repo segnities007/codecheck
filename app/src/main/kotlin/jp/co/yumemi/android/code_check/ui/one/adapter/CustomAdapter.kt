@@ -1,25 +1,18 @@
-package jp.co.yumemi.android.code_check.ui.one
+package jp.co.yumemi.android.code_check.ui.one.adapter
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
 import jp.co.yumemi.android.code_check.R
+import jp.co.yumemi.android.code_check.domain.OnItemClickListener
 import jp.co.yumemi.android.code_check.model.Item
 
 //OneFragmentで使用します
 class CustomAdapter(
     private val itemClickListener: OnItemClickListener,
-) : ListAdapter<Item, CustomAdapter.ViewHolder>(diff_util){
-
-    interface OnItemClickListener{
-        fun itemClick(item: Item)
-    }
-
-    class ViewHolder(view: View): RecyclerView.ViewHolder(view)
+) : ListAdapter<Item, ViewHolder>(diff_util){
 
     override fun onCreateViewHolder(
         parent: ViewGroup,
@@ -60,3 +53,5 @@ private val diff_util = object: DiffUtil.ItemCallback<Item>(){
     }
 
 }
+
+
