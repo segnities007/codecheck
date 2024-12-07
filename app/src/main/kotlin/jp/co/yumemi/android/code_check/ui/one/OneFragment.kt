@@ -26,7 +26,7 @@ class OneFragment: Fragment(R.layout.fragment_one){
         val context = requireContext()
         val layoutManager = LinearLayoutManager(context)
         val binding = FragmentOneBinding.bind(view)
-        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
+//        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         val viewModel = OneViewModel()
         val adapter = CustomAdapter(
             object : OnItemClickListener {
@@ -36,7 +36,7 @@ class OneFragment: Fragment(R.layout.fragment_one){
             }
         )
 
-        viewModel.bindingHandler(context, viewModel, adapter, lifecycleScope, binding, layoutManager, dividerItemDecoration)
+        viewModel.bindingHandler(view, context, viewModel, adapter, lifecycleScope, binding)
 
     }
 

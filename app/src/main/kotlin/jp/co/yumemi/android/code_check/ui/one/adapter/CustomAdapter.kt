@@ -3,6 +3,7 @@ package jp.co.yumemi.android.code_check.ui.one.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.annotation.VisibleForTesting
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import jp.co.yumemi.android.code_check.R
