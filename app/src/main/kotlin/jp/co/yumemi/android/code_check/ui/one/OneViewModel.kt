@@ -5,12 +5,15 @@ package jp.co.yumemi.android.code_check.ui.one
 
 import android.content.Context
 import android.util.Log
+import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.compose.ui.platform.ComposeView
 import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
+import androidx.navigation.Navigation.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import io.ktor.client.*
@@ -20,6 +23,7 @@ import io.ktor.client.request.*
 import io.ktor.client.statement.*
 import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.TopActivity.Companion.lastSearchDate
+import jp.co.yumemi.android.code_check.compose.ui.components.RepositoryList
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
 import jp.co.yumemi.android.code_check.model.Item
 import jp.co.yumemi.android.code_check.ui.one.adapter.CustomAdapter
@@ -34,18 +38,19 @@ class OneViewModel(
 ) : ViewModel() {
 
     fun bindingHandler(
+        view: View,
         context: Context,
         viewModel: OneViewModel,
         adapter: CustomAdapter,
         lifecycleScope: LifecycleCoroutineScope,
         binding: FragmentOneBinding,
-        layoutManager: LinearLayoutManager,
-        dividerItemDecoration: DividerItemDecoration
+//        layoutManager: LinearLayoutManager,
+//        dividerItemDecoration: DividerItemDecoration
     ){
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 val query = editText.text.toString()
-                viewModel.searchResults(context, query, viewModel, adapter, lifecycleScope)
+                viewModel.searchResults(view, context, query, viewModel, adapter, lifecycleScope)
                 hideKeyboard(editText, context)
                 editText.clearFocus()
                 true
@@ -54,11 +59,11 @@ class OneViewModel(
             }
         }
 
-        binding.recyclerView.also{
-            it.layoutManager = layoutManager
-            it.addItemDecoration(dividerItemDecoration)
-            it.adapter = adapter
-        }
+//        binding.recyclerView.also{
+//            it.layoutManager = layoutManager
+//            it.addItemDecoration(dividerItemDecoration)
+//            it.adapter = adapter
+//        }
     }
 
     private fun hideKeyboard(
@@ -82,6 +87,7 @@ class OneViewModel(
     }
 
     private fun searchResults(
+        view: View,
         context: Context,
         query: String,
         viewModel: OneViewModel,
@@ -89,8 +95,14 @@ class OneViewModel(
         lifecycleScope: LifecycleCoroutineScope,
     ) {
         lifecycleScope.launch {
-            val searchResult = viewModel.suspendSearchResults(context, query)
-            adapter.submitList(searchResult)
+            //取得した情報を受け取る
+            val searchResults: List<Item> = viewModel.suspendSearchResults(context, query)
+            val composeView = view.findViewById<ComposeView>(R.id.compose_view_1)
+            composeView.setContent {
+                val navController = findNavController(view)
+                RepositoryList(searchResults){ item ->
+                    viewModel.goToRepositoryFragment(item, navController)}
+            }
         }
     }
 
