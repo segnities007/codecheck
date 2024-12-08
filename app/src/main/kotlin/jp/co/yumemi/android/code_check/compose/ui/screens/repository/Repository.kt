@@ -1,7 +1,6 @@
-package jp.co.yumemi.android.code_check.compose.ui.screens
+package jp.co.yumemi.android.code_check.compose.ui.screens.repository
 
-import android.provider.CalendarContract.Colors
-import androidx.compose.foundation.background
+import android.R
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,12 +12,11 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -46,7 +44,7 @@ private fun RepositoryImage(
     name: String,
 ){
     val padding = 32
-    val fontSize = 32
+    val fontSize = 26
     val imageSize = 160
     Column(
         modifier = Modifier
@@ -57,7 +55,8 @@ private fun RepositoryImage(
     ){
         AsyncImage(model = url, contentDescription = name, modifier = Modifier.size(imageSize.dp))
         Spacer(modifier = Modifier.padding((padding/2).dp))
-        Text(name, fontSize = fontSize.sp)
+        //ダークモードだとカラーがなぜか黒になるので色を明示
+        Text(name, fontSize = fontSize.sp, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 

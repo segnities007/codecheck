@@ -5,15 +5,15 @@ package jp.co.yumemi.android.code_check.ui.one
 
 import android.os.Bundle
 import android.view.View
+import androidx.compose.ui.platform.ComposeView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
-import androidx.recyclerview.widget.*
 import jp.co.yumemi.android.code_check.R
+import jp.co.yumemi.android.code_check.compose.ui.Theme
+import jp.co.yumemi.android.code_check.compose.ui.screens.repository.Repository
+import jp.co.yumemi.android.code_check.compose.ui.screens.search.Search
 import jp.co.yumemi.android.code_check.databinding.FragmentOneBinding
-import jp.co.yumemi.android.code_check.domain.OnItemClickListener
-import jp.co.yumemi.android.code_check.model.Item
-import jp.co.yumemi.android.code_check.ui.one.adapter.CustomAdapter
 
 class OneFragment: Fragment(R.layout.fragment_one){
 
@@ -22,12 +22,15 @@ class OneFragment: Fragment(R.layout.fragment_one){
         savedInstanceState: Bundle?
     ) {
         super.onViewCreated(view, savedInstanceState)
-
         val context = requireContext()
-        val binding = FragmentOneBinding.bind(view)
-        val viewModel = OneViewModel()
 
-        viewModel.bindingHandler(view, context, viewModel, lifecycleScope, binding)
+        val viewModel = OneViewModel()
+        val composeView = view.findViewById<ComposeView>(R.id.search)
+        composeView.setContent {
+            Theme {
+                Search(view, context){item -> viewModel.goToRepositoryFragment(item, findNavController())}
+            }
+        }
 
     }
 
