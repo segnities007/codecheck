@@ -41,16 +41,13 @@ class OneViewModel(
         view: View,
         context: Context,
         viewModel: OneViewModel,
-        adapter: CustomAdapter,
         lifecycleScope: LifecycleCoroutineScope,
         binding: FragmentOneBinding,
-//        layoutManager: LinearLayoutManager,
-//        dividerItemDecoration: DividerItemDecoration
     ){
         binding.searchInputText.setOnEditorActionListener { editText, action, _ ->
             if (action == EditorInfo.IME_ACTION_SEARCH) {
                 val query = editText.text.toString()
-                viewModel.searchResults(view, context, query, viewModel, adapter, lifecycleScope)
+                viewModel.searchResults(view, context, query, viewModel, lifecycleScope)
                 hideKeyboard(editText, context)
                 editText.clearFocus()
                 true
@@ -58,12 +55,6 @@ class OneViewModel(
                 false
             }
         }
-
-//        binding.recyclerView.also{
-//            it.layoutManager = layoutManager
-//            it.addItemDecoration(dividerItemDecoration)
-//            it.adapter = adapter
-//        }
     }
 
     private fun hideKeyboard(
@@ -91,13 +82,12 @@ class OneViewModel(
         context: Context,
         query: String,
         viewModel: OneViewModel,
-        adapter: CustomAdapter,
         lifecycleScope: LifecycleCoroutineScope,
     ) {
         lifecycleScope.launch {
             //取得した情報を受け取る
             val searchResults: List<Item> = viewModel.suspendSearchResults(context, query)
-            val composeView = view.findViewById<ComposeView>(R.id.compose_view_1)
+            val composeView = view.findViewById<ComposeView>(R.id.repository_list)
             composeView.setContent {
                 val navController = findNavController(view)
                 RepositoryList(searchResults){ item ->
