@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import jp.co.yumemi.android.code_check.model.Item
 
+//取得したRepositoriesをリスト表示する
 @Composable
 fun RepositoryList(
     itemList: List<Item>,

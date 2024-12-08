@@ -24,19 +24,10 @@ class OneFragment: Fragment(R.layout.fragment_one){
         super.onViewCreated(view, savedInstanceState)
 
         val context = requireContext()
-        val layoutManager = LinearLayoutManager(context)
         val binding = FragmentOneBinding.bind(view)
-//        val dividerItemDecoration = DividerItemDecoration(context, layoutManager.orientation)
         val viewModel = OneViewModel()
-        val adapter = CustomAdapter(
-            object : OnItemClickListener {
-                override fun itemClick(item: Item) {
-                    viewModel.goToRepositoryFragment(item, findNavController())
-                }
-            }
-        )
 
-        viewModel.bindingHandler(view, context, viewModel, adapter, lifecycleScope, binding)
+        viewModel.bindingHandler(view, context, viewModel, lifecycleScope, binding)
 
     }
 

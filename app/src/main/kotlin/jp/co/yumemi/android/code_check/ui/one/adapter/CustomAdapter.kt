@@ -10,7 +10,8 @@ import jp.co.yumemi.android.code_check.R
 import jp.co.yumemi.android.code_check.domain.OnItemClickListener
 import jp.co.yumemi.android.code_check.model.Item
 
-//OneFragmentで使用します
+//OneFragmentで使用します↓
+//Jetpack Composeに移行した結果多分使用しない
 class CustomAdapter(
     private val itemClickListener: OnItemClickListener,
 ) : ListAdapter<Item, ViewHolder>(diff_util){
