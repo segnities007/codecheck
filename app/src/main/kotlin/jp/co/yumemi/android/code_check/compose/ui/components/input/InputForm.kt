@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -20,11 +22,13 @@ import androidx.compose.ui.unit.dp
 import io.ktor.http.cio.websocket.Frame.Text
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 
 @Composable
-@Preview
-fun InputForm(){
+fun InputForm(
+    onEnterHandler: () -> Unit
+){
     val elevation = 8.0
     val padding = 12.0
 //    val radius = 12.0
@@ -46,6 +50,14 @@ fun InputForm(){
             label = { Text("Enter text") },
             textStyle = TextStyle(color = Color.Blue, fontWeight = FontWeight.Bold),
             modifier = Modifier.padding(20.dp),
+            keyboardOptions = KeyboardOptions.Default.copy(
+                imeAction = ImeAction.Done
+            ),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    onEnterHandler()
+                }
+            )
         )
     }
 }
